@@ -630,6 +630,14 @@
     // Chainability.
     return this;
   };
+  
+  
+  $.fn.stopTransition = $.fn.stopTransit = function(/* gotoEnd=true */){
+    this.each(function() {
+      this.style[support.transition] = "none 0s linear";
+    });
+    return this;
+  };
 
   function registerCssHook(prop, isPixels) {
     // For certain properties, the 'px' should not be implied.
