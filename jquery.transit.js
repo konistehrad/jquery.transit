@@ -632,12 +632,31 @@
   };
   
   
-  $.fn.stopTransition = $.fn.stopTransit = function(/* gotoEnd=true */){
-    this.each(function() {
-      this.style[support.transition] = "none 0s linear";
-    });
+  $.fn.stopTransition = $.fn.stopTransit = function(type, clearQueue, jumpToEnd){
+		if ( typeof type !== "string" ) {
+			gotoEnd = clearQueue;
+			clearQueue = type;
+			type = undefined;
+		}
+    
+		if ( clearQueue && type !== false ) {
+			this.queue( type || "fx", [] );
+		}
+    
+    if( jumpToEnd )
+    {
+      this.each(function() {
+        this.style[support.transition] = "none 0s linear";
+      });
+    }
+    else
+    {
+      $.error("jumpToEnd=false not yet supported in transit!");
+    }
+    
     return this;
   };
+  
 
   function registerCssHook(prop, isPixels) {
     // For certain properties, the 'px' should not be implied.
