@@ -644,16 +644,16 @@
   
   
   $.fn.stopTransition = $.fn.stopTransit = function(type, clearQueue, jumpToEnd){
-		if ( typeof type !== "string" ) {
-			gotoEnd = clearQueue;
-			clearQueue = type;
-			type = undefined;
-		}
-    
-		if ( clearQueue && type !== false ) {
-			this.queue( type || "fx", [] );
-		}
-    
+	if ( typeof type !== "string" ) {
+		jumpToEnd = clearQueue;
+		clearQueue = type;
+		type = undefined;
+	}
+
+	if ( clearQueue && type !== false ) {
+		this.queue( type || "fx", [] );
+	}
+
     if( jumpToEnd )
     {
       this.each(function() {
