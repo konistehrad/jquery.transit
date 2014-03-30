@@ -203,6 +203,8 @@
   // ## Other CSS hooks
   // Allows you to rotate, scale and translate.
   registerCssHook('scale');
+  registerCssHook('scaleX');
+  registerCssHook('scaleY');
   registerCssHook('translate');
   registerCssHook('rotate');
   registerCssHook('rotateX');
@@ -302,14 +304,42 @@
         this.rotateY = unit(theta, 'deg');
       },
 
+      scaleX: function(x) {
+        this.set('scale', x, null);
+      },
+
+      scaleY: function(y) {
+        this.set('scale', null, y);
+      },
+
       // ### scale
       //
       //     .css({ scale: 9 })      //=> "scale(9,9)"
       //     .css({ scale: '3,2' })  //=> "scale(3,2)"
       //
       scale: function(x, y) {
-        if (y === undefined) { y = x; }
-        this.scale = x + "," + y;
+        if (this._scaleX === undefined) { this._scaleX = 1; }
+        if (this._scaleY === undefined) { this._scaleY = 1; }
+
+        if (arguments.length === 1) { 
+          // one arg, check to see if it's a string!
+          if( typeof x === 'string' ) {
+            // oh, so it is. try to split, in case two components were given
+            var components = x.split(',');
+            if( components.length > 1 ){
+              // oh, guess so
+              x = parseFloat(components[0]);
+              y = parseFloat(components[1]);
+            }
+          } else {
+            y = x; 
+          }
+        }
+
+        if (x !== null && x !== undefined) { this._scaleX = parseFloat(x); }
+        if (y !== null && y !== undefined) { this._scaleY = parseFloat(y); }
+
+        this.scale = this._scaleX + ',' + this._scaleY;
       },
 
       // ### skewX + skewY
@@ -340,6 +370,11 @@
         this.set('translate', null, y);
       },
 
+      matrix: function(sx, b, c, sy, tx, ty) {
+        this.setter['translate'].call(this,tx,ty);
+        this.setter['scale'].call(this,sx,sy);
+      },
+
       // ### translate
       // Notice how this keeps the other value.
       //
@@ -365,14 +400,13 @@
         return this._translateY || 0;
       },
 
-      scale: function() {
-        var s = (this.scale || "1,1").split(',');
-        if (s[0]) { s[0] = parseFloat(s[0]); }
-        if (s[1]) { s[1] = parseFloat(s[1]); }
+      scaleX: function() { return this._scaleX || 1; },
+      scaleY: function() { return this._scaleY || 1; },
 
-        // "2.5,2.5" => 2.5
-        // "2.5,1" => [2.5,1]
-        return (s[0] === s[1]) ? s[0] : s;
+      scale: function() {
+        var sx = this._scaleX || 1;
+        var sy = this._scaleY || 1;
+        return sx === sy ? sx : [sx,sy];
       },
 
       rotate3d: function() {
@@ -622,7 +656,7 @@
         if (i > 0) {
           this.style[support.transition] = transitionValue;
         }
-        $(this).css(properties);
+        $(this).css(theseProperties);
       });
     };
 
