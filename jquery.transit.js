@@ -68,16 +68,8 @@
   support.transformOrigin = getVendorPropertyName('transformOrigin');
   support.transform3d     = checkTransform3dSupport();
 
-  var eventNames = {
-    'transition':       'transitionEnd',
-    'MozTransition':    'transitionend',
-    'OTransition':      'oTransitionEnd',
-    'WebkitTransition': 'webkitTransitionEnd',
-    'msTransition':     'MSTransitionEnd'
-  };
-
   // Detect the 'transitionend' event needed.
-  var transitionEnd = support.transitionEnd = eventNames[support.transition] || null;
+  var transitionEnd = support.transitionEnd = 'transitionend transitionEnd webkitTransitionEnd otransitionend oTransitionEnd MSTransitionEnd';
 
   // Populate jQuery's `$.support` with the vendor prefixes we know.
   // As per [jQuery's cssHooks documentation](http://api.jquery.com/jQuery.cssHooks/),
@@ -598,7 +590,7 @@
 
       // Prepare the callback.
       var cb = function() {
-        if (bound) { self.unbind(transitionEnd, cb); }
+        if (bound) { self.off(transitionEnd, cb); }
 
         if (i > 0) {
           self.each(function() {
@@ -613,7 +605,7 @@
       if ((i > 0) && (transitionEnd) && ($.transit.useTransitionEnd)) {
         // Use the 'transitionend' event if it's available.
         bound = true;
-        self.bind(transitionEnd, cb);
+        self.on(transitionEnd, cb);
       } else {
         // Fallback to timers if the 'transitionend' event isn't supported.
         window.setTimeout(cb, i);
