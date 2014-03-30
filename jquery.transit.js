@@ -128,7 +128,13 @@
   $.cssHooks['transit:transform'] = {
     // The getter returns a `Transform` object.
     get: function(elem) {
-      return $(elem).data('transform') || new Transform();
+      if( !($(elem).data('transform')) ) {
+        var style = window.getComputedStyle(elem);
+        var transformString = style[support.transform];
+        var transform = new Transform(transformString);
+        $(elem).data('transform', transform);
+      }
+      return $(elem).data('transform');
     },
 
     // The setter accepts a `Transform` object or a string.
