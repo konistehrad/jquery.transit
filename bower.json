@@ -9,11 +9,9 @@
     "transition"
   ],
   "dependencies": {
-    "component/jquery": "*"
+    "jquery": "*"
   },
   "development": {},
   "license": "MIT",
-  "scripts": [
-    "jquery.transit.js"
-  ]
+  "main": "jquery.transit.js"
 }
