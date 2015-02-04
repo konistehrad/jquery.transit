@@ -670,7 +670,7 @@
       var bound = false;
 
       // Prepare the callback.
-      var cb = function() {
+      var cb = function(jEvent) {
         if (bound) { self.off(transitionEnd, cb); }
 
         if (i > 0) {
@@ -679,7 +679,7 @@
           });
         }
 
-        if (typeof callback === 'function') { callback.apply(self); }
+        if (typeof callback === 'function') { callback.call(self, jEvent); }
         if (typeof nextCall === 'function') { nextCall(); }
       };
 
